@@ -8,9 +8,9 @@ function markX(element){
         element.innerText = "X";
 
         let gameContinues = checkResult();
-        if (gameContinues){
-            opponentMove();
+        if (gameContinues == false){
             checkResult();
+            opponentMove();
         }
     }
 
@@ -35,32 +35,56 @@ function randomInteger(min, max) {
   }
 
 function checkResult(){
-    WinnerDetermined();
-    return anyMovesLeft();
+    return WinnerDetermined() || noMovesLeft();
 }
 
-function anyMovesLeft(){
+function noMovesLeft(){
     var cells = Array.from(document.getElementsByClassName("cell"));
     cells = cells.filter(cell => cell.innerText == "");
 
     if (cells.length == 0){
         document.querySelector(".game--status").innerText = "DRAW";
-        return false; //Games finishes
+        return true; //Games finishes
     }
-    return true; //Game continues
+    return false; //Game continues
 }
 
 
 function WinnerDetermined(){
     let winningCellCombinations = [
-        [0,1,3],
+        [0,1,2],
         [3,4,5],
         [6,7,8],
         [0,3,6],
         [1,4,7],
         [2,5,8],
         [0,4,8],
-        [3,5,7]
+        [2,4,6]
     ]
 
+    winningCellCombinations.forEach( combination => 
+        {
+            elementValue1 = getCellValue(combination[0]);
+            elementValue2 = getCellValue(combination[1]);
+            elementValue3 = getCellValue(combination[2]);
+
+            let isGameCompleted = 
+                elementValue1 == elementValue2 
+                && elementValue2 == elementValue3
+                && elementValue1 != "";
+
+            if (isGameCompleted){
+                var gameSattusElement = document.querySelector(".game--status");
+
+                gameSattusElement.innerText = `${elementValue1} has won the game`
+                return true;
+            }
+    });
+
+    return false;
+
+}
+
+function getCellValue(index) {
+    return document.querySelector(`[data-cell-index="${index}"]`).innerText;
 }
