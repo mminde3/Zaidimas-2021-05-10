@@ -85,6 +85,7 @@ function WinnerDetermined(){
 
 }
 
+
 function getCellValue(index) {
     return document.querySelector(`[data-cell-index="${index}"]`).innerText;
 }
