@@ -1,56 +1,32 @@
 document.addEventListener('click', function(event){
-    var target = event.target
-    markX(target);
+    var target = event.target;
+
+    // Reset Game button do
+    if (target.classList.contains("game--restart")){
+        location.reload();
+    }
+    
+    let gameContinues = checkResult();
+    // Block click do action
+    if (target.classList.contains("cell") && target.innerText == "" && gameContinues == false){
+        target.innerText = "X";
+        opponentMove();
+    }
 }); 
 
-function markX(element){
-    if (element.classList.contains("cell") && element.innerText == ""){
-        element.innerText = "X";
-
-        let gameContinues = checkResult();
-        if (gameContinues == false){
-            checkResult();
-            opponentMove();
-        }
-    }
-
-}
-
 function opponentMove(){
-
-    var cells = Array.from(document.getElementsByClassName("cell"));
-    cells = cells.filter(cell => cell.innerText == "");
-
-    let randomNumber = randomInteger(0, cells.length);
-
-    let randomCell = cells[randomNumber];
-
-    randomCell.innerText = '0';
-    
+    let gameContinues = checkResult();
+    if (gameContinues == false){
+        let randomCell = getArray()[Math.floor(Math.random()*(getArray().length))];
+        randomCell.innerText = '0';
+        checkResult();
+        }
 }
 
-function randomInteger(min, max) {
-    const r = Math.random()*(max-min) + min;
-    return Math.floor(r);
-  }
+function checkResult(check){
+    check = false;
 
-function checkResult(){
-    return WinnerDetermined() || noMovesLeft();
-}
-
-function noMovesLeft(){
-    var cells = Array.from(document.getElementsByClassName("cell"));
-    cells = cells.filter(cell => cell.innerText == "");
-
-    if (cells.length == 0){
-        document.querySelector(".game--status").innerText = "DRAW";
-        return true; //Games finishes
-    }
-    return false; //Game continues
-}
-
-
-function WinnerDetermined(){
+    //Winer determination
     let winningCellCombinations = [
         [0,1,2],
         [3,4,5],
@@ -63,8 +39,7 @@ function WinnerDetermined(){
     ]
 
     winningCellCombinations.forEach( combination => 
-        {
-            elementValue1 = getCellValue(combination[0]);
+        {   elementValue1 = getCellValue(combination[0]);
             elementValue2 = getCellValue(combination[1]);
             elementValue3 = getCellValue(combination[2]);
 
@@ -77,12 +52,22 @@ function WinnerDetermined(){
                 var gameSattusElement = document.querySelector(".game--status");
 
                 gameSattusElement.innerText = `${elementValue1} has won the game`
-                return true;
-            }
+                check = true; //Games finishes some one won
+                } 
     });
 
-    return false;
+    //Check if there is move to make    
+    if(getArray().length == 0 && check == false){ 
+        document.querySelector(".game--status").innerText = "DRAW";
+        check = true; //Games finishes
+        }
 
+    return check;
+}
+
+function getArray(cells){
+    cells = Array.from(document.getElementsByClassName("cell"));
+    return cells.filter(cell => cell.innerText == "");
 }
 
 function getCellValue(index) {
