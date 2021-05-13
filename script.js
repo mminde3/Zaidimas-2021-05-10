@@ -4,7 +4,8 @@ document.addEventListener('click', function(event){
 }); 
 
 function markX(element){
-    if (element.classList.contains("cell") && element.innerText == ""){
+    let gameContinues = checkResult();
+    if (element.classList.contains("cell") && element.innerText == "" && gameContinues == false ){
         element.innerText = "X";
 
         let gameContinues = checkResult();
@@ -62,16 +63,17 @@ function WinnerDetermined(){
         [2,4,6]
     ]
 
-    winningCellCombinations.forEach( combination => 
-        {
+    for (let i = 0; i < winningCellCombinations.length; i++) {
+        const combination = winningCellCombinations[i];
+        
             elementValue1 = getCellValue(combination[0]);
             elementValue2 = getCellValue(combination[1]);
             elementValue3 = getCellValue(combination[2]);
 
             let isGameCompleted = 
-                elementValue1 == elementValue2 
-                && elementValue2 == elementValue3
-                && elementValue1 != "";
+            elementValue1 == elementValue2 
+            && elementValue2 == elementValue3
+            && elementValue1 != "";
 
             if (isGameCompleted){
                 var gameSattusElement = document.querySelector(".game--status");
@@ -79,10 +81,9 @@ function WinnerDetermined(){
                 gameSattusElement.innerText = `${elementValue1} has won the game`
                 return true;
             }
-    });
 
-    return false;
-
+        return false;
+    }
 }
 
 
